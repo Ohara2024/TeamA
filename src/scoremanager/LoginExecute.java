@@ -36,7 +36,7 @@ public class LoginExecute extends Action {
                 // 認証成功
                 HttpSession session = request.getSession();
                 session.setAttribute("user", id);
-                return "/home.jsp";
+                return "/menu.jsp";
             } else {
                 // 認証失敗
                 request.setAttribute("error", "IDまたはパスワードが正しくありません");
