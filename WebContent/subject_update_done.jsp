@@ -18,6 +18,6 @@
     SubjectDao dao = new SubjectDao();
     dao.save(subject);
 %>
-
-<p>登録が完了しました。</p>
-<a href="subject_list.jsp">一覧へ戻る</a>
+ <h2>科目情報変更</h2>
+<p>変更が完了しました。</p>
+<a href="subject_list.jsp">科目一覧</a>

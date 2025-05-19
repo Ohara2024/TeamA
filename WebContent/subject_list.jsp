@@ -26,7 +26,7 @@
         <tr>
             <td><%= subject.getCd() %></td>
             <td><%= subject.getName() %></td>
-            <td><a href="subject_edit.jsp?code=<%= subject.getCd() %>">変更</a></td>
+            <td><a href="subject_update.jsp?code=<%= subject.getCd() %>">変更</a></td>
             <td><a href="subject_delete.jsp?code=<%= subject.getCd() %>">削除</a></td>
         </tr>
         <%
