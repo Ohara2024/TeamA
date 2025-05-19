@@ -20,4 +20,7 @@
 %>
 
 <p>登録が完了しました。</p>
-<a href="subject_list.jsp">一覧へ戻る</a>
+<button onclick="history.back()">戻る</button>
+<a href="subject_list.jsp">科目一覧</a>
+
+
