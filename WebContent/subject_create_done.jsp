@@ -1,12 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="bean.Subject" %>
+<%
+    Subject subject = (Subject) request.getAttribute("subject");
+%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>登録完了</title>
 </head>
 <body>
-
+    <h1>科目登録完了</h1>
+    <p>以下の科目を登録しました。</p>
+    <ul>
+        <li>科目コード：<%= subject.getCd() %></li>
+        <li>科目名：<%= subject.getName() %></li>
+    </ul>
+    <a href="SubjectListServlet">科目一覧へ</a>
 </body>
 </html>

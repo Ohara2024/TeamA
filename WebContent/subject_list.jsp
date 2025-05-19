@@ -1,12 +1,37 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="bean.Subject" %>
+<%
+    List<Subject> subjectList = (List<Subject>) request.getAttribute("subjectList");
+%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>科目管理</title>
 </head>
 <body>
-
+    <h1>科目管理</h1>
+    <a href="subject_create.jsp">科目登録</a>
+    <table border="1">
+        <tr>
+            <th>科目コード</th>
+            <th>科目名</th>
+            <th>変更</th>
+            <th>削除</th>
+        </tr>
+        <%
+            for (Subject subject : subjectList) {
+        %>
+        <tr>
+            <td><%= subject.getCd() %></td>
+            <td><%= subject.getName() %></td>
+            <td><a href="subject_edit.jsp?code=<%= subject.getCd() %>">変更</a></td>
+            <td><a href="subject_delete.jsp?code=<%= subject.getCd() %>">削除</a></td>
+        </tr>
+        <%
+            }
+        %>
+    </table>
 </body>
 </html>
