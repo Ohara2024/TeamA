@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% String userName="越澤"; %>
+<% String user="越澤"; %>
 <style>
     header {
         background-color: #e8f1ff;
@@ -25,9 +25,9 @@
 
 <header>
     <div class="header-title">得点管理システム</div>
-    <% if (userName != null) { %>
+    <% if (user != null) { %>
         <div class="header-sub">
-             <%= userName %> 様　<a href="">ログアウト</a>
+             <%= user %> 様　<a href="">ログアウト</a>
         </div>
     <% } %>
 </header>
