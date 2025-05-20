@@ -2,12 +2,12 @@
     pageEncoding="UTF-8"%>
 
 <%
-    String userName = (String) session.getAttribute("userName");
+    String user = (String) session.getAttribute("user");
 %>
 <main>
 	<div class="sidebar">
 	    <ul>
-	    	<% if (userName != null) { %>
+	    	<% if (user != null) { %>
 	        <li><a href="">メニュー</a></li>
 	        <li><a href="">学生管理</a></li>
 	        <li><a href="">成績管理</a></li>
