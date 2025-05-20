@@ -1,3 +1,5 @@
+<%@ include file="../tool/header.jsp" %>
+<%@ include file="../tool/sidebar.jsp" %>
     <h2>ログイン</h2>
     <form action="loginExecute.action" method="POST">
         <label for="id">ID:</label>
@@ -8,3 +10,4 @@
 
         <input type="submit" value="ログイン">
     </form>
+<%@ include file="../tool/footer.jsp" %>
