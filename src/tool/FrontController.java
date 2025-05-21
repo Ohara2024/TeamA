@@ -36,7 +36,7 @@ public class FrontController extends HttpServlet {
                 // scoremanager/main/LoginExecute.action → scoremanager.LoginExecuteAction に変換
                 String subPath = path.substring("scoremanager/main/".length());  // LoginExecute.action
                 subPath = subPath.replace(".action", "");                       // LoginExecute
-                className = "scoremanager." + subPath + "Action";               // scoremanager.LoginExecuteAction
+                className = "scoremanager.main." + subPath;               // scoremanager.LoginExecuteAction
             } else {
                 // それ以外は通常通り変換
                 String classPath = path.replace(".action", "").replace("/", ".");

@@ -12,20 +12,4 @@
 	        <li><a href="">科目管理</a></li>
 	    </ul>
 	</div>
-
-	<style>
-	.sidebar {
-	    text-align: left;
-    	background-color: #fff;
-    	width: 250px;
-    	border-right: 1px solid #ccc;
-	}
-	ul {
-	    list-style-type: none;
-	    padding: 0;
-	}
-	li {
-	    margin: 10px 0;
-	}
-	</style>
 </main>
