@@ -21,6 +21,37 @@
         color: #333;
         margin-top: 5px;
     }
+    .sidebar {
+	    text-align: left;
+    	background-color: #fff;
+    	width: 250px;
+    	border-right: 1px solid #ccc;
+    	padding: 10px;
+    	box-sizing: border-box;
+	}
+	ul {
+	    list-style-type: none;
+	    padding: 0;
+	    margin: 0
+	}
+	li {
+	    margin: 10px 0;
+	}
+	main{
+    display: flex;
+    min-height: 100vh;
+    margin: 10px 0;
+	}
+	main h2{
+		background-color:#f0f1f2;
+
+	}
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
 </style>
 
 <header>
@@ -31,3 +62,4 @@
         </div>
     <% } %>
 </header>
+<main>
