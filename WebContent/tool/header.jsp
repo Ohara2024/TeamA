@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% String userName="越澤"; %>
+<%
+String userName = (String) session.getAttribute("name");
+%>
+
 <style>
     header {
         background-color: #e8f1ff;
@@ -41,17 +44,21 @@
     display: flex;
     min-height: 100vh;
     margin: 10px 0;
+
 	}
 	main h2{
 		background-color:#f0f1f2;
+		text-align:center;
 
 	}
-.content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f9f9f9;
-    box-sizing: border-box;
-}
+	content {
+	    flex: 1;
+	    padding: 20px;
+	    box-sizing: border-box;
+	}
+	content h2{
+		background-color:#f0f1f2;
+	}
 </style>
 
 <header>
