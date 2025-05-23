@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.*, bean.Student" %>
 <%@ include file="../tool/header.jsp" %>
 
 <style>
@@ -27,9 +28,9 @@
     }
 
     .error-message-container {
-        background-color: #f2dede;
-        color: #a94442;
-        border: 1px solid #ebccd1;
+        background-color: #f2dede; /* 薄い赤色 */
+        color: #a94442; /* 濃い赤色の文字 */
+        border: 1px solid #ebccd1; /* 赤色のボーダー */
         padding: 15px 20px;
         margin-bottom: 20px;
         border-radius: 4px;
@@ -51,10 +52,10 @@
 </style>
 
 <div class="main-content-area">
-    <h1 class="page-title">エラー</h1>
+    <h1 class="page-title">学生情報登録</h1>
 
     <div class="error-message-container">
-        <p>エラーが発生しました</p>
+        <p>学生登録にてエラーが発生しました</p>
     </div>
 
     <a href="javascript:history.back()" class="back-link">戻る</a>

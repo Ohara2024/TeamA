@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<% String userName="越澤"; %>
+<%
+    // セッションからTeacherオブジェクトを取得
+    bean.Teacher teacher = (bean.Teacher) session.getAttribute("user");
+    String teacherName = (teacher != null) ? teacher.getName() : "ゲスト";
+%>
 <style>
     header {
         background-color: #e8f1ff;
@@ -56,9 +60,9 @@
 
 <header>
     <div class="header-title">得点管理システム</div>
-    <% if (userName != null) { %>
+    <% if (teacherName != null) { %>
         <div class="header-sub">
-             <%= userName %> 様　<a href="">ログアウト</a>
+             <%= teacherName %> 様　<a href="">ログアウト</a>
         </div>
     <% } %>
 </header>

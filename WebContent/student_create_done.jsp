@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.*, bean.Student" %>
 <%@ include file="../tool/header.jsp" %>
 
 <style>
@@ -26,10 +27,10 @@
         color: #333;
     }
 
-    .error-message-container {
-        background-color: #f2dede;
-        color: #a94442;
-        border: 1px solid #ebccd1;
+    .success-message-container {
+        background-color: #dff0d8;
+        color: #3c763d;
+        border: 1px solid #d6e9c6;
         padding: 15px 20px;
         margin-bottom: 20px;
         border-radius: 4px;
@@ -37,7 +38,7 @@
         text-align: left;
     }
 
-    .back-link {
+    .back-to-list-link {
         display: inline-block;
         margin-top: 20px;
         font-size: 14px;
@@ -45,19 +46,19 @@
         text-decoration: none;
     }
 
-    .back-link:hover {
+    .back-to-list-link:hover {
         text-decoration: underline;
     }
 </style>
 
 <div class="main-content-area">
-    <h1 class="page-title">エラー</h1>
+    <h1 class="page-title">学生情報変更</h1>
 
-    <div class="error-message-container">
-        <p>エラーが発生しました</p>
+    <div class="success-message-container">
+        <p>変更が完了しました</p>
     </div>
 
-    <a href="javascript:history.back()" class="back-link">戻る</a>
+    <a href="studentSearch" class="back-to-list-link">学生一覧</a>
 </div>
 
 <%@ include file="../tool/footer.jsp" %>
