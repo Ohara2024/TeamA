@@ -62,7 +62,7 @@
     <div class="header-title">得点管理システム</div>
     <% if (teacherName != null) { %>
         <div class="header-sub">
-             <%= teacherName %> 様　<a href="">ログアウト</a>
+             <%= teacherName %> 様　<a href="/TeamA/scoremanager/main/Logout.action">ログアウト</a>
         </div>
     <% } %>
 </header>

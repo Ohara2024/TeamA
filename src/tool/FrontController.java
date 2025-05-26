@@ -1,7 +1,6 @@
 package tool;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,37 +8,51 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"*.action"})
+@WebServlet(urlPatterns = { "*.action" })
+
 public class FrontController extends HttpServlet {
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        try {
-        	String path = request.getServletPath().substring(1);  // 例: scoremanager/login.action
-        	int dotIndex = path.lastIndexOf('.');
-        	String base = (dotIndex > 0) ? path.substring(0, dotIndex) : path;  // scoremanager/login
-        	String name = base.replace('/', '.');  // scoremanager.loginAction
+	@Override
+
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+		try {
+
+			// パスを取得
+
+			String path = req.getServletPath().substring(1);
+
+			// ファイル名を取得しクラス名に変換
+
+			String name = path.replace(".a", "A").replace('/', '.');
+
+			// アクションクラスのインスタンスを返却
+
+			Action action = (Action) Class.forName(name).getDeclaredConstructor().newInstance();
+
+			// 遷移先URLを取得
+
+			action.execute(req, res);
 
 
-            // 動的にアクションクラスをロードしてインスタンス生成
-            Action action = (Action) Class.forName(name).getDeclaredConstructor().newInstance();
+		} catch (Exception e) {
 
-            // executeメソッドを呼び出して、フォワード先のURLを取得
-            String url = action.execute(request, response);
+			e.printStackTrace();
 
-            // JSPなどにフォワード
-            request.getRequestDispatcher(url).forward(request, response);
+			// エラーページへリダイレクト
 
-        } catch (Exception e) {
-            e.printStackTrace(out);
-        }
-    }
+			req.getRequestDispatcher("/error.jsp").forward(req, res);
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response); // GETリクエストもPOSTと同様に処理
-    }
+		}
+
+	}
+
+	@Override
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+		doGet(req,res);
+
+	}
+
 }

@@ -105,7 +105,7 @@
 <div class="login-container">
     <div class="login-card">
         <h2 class="login-title">ログイン</h2>
-        <form action="${pageContext.request.contextPath}/scoremanager/LoginExecuteAction.action" method="POST">
+        <form action="/TeamA/scoremanager/LoginExecute.action" method="POST">
             <div class="form-group">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" id="id" name="id" class="form-input" placeholder="ID" required>

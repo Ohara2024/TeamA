@@ -12,38 +12,41 @@ import bean.School;
 import bean.Teacher;
 import dao.SchoolDao;
 import dao.TeacherDao;
-import tool.Action;
+import tool.Action;  // ← Action インターフェースのインポート
 
 public class LoginExecuteAction extends Action {
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String id = request.getParameter("id");
-        String password = request.getParameter("password");
 
-        TeacherDao dao = new TeacherDao();
-        Teacher teacher = dao.login(id, password);
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            String id = request.getParameter("id");
+            String password = request.getParameter("password");
 
-        if (teacher != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", teacher);
-            request.setAttribute("teachername", teacher.getName());
+            TeacherDao dao = new TeacherDao();
+            Teacher teacher = dao.login(id, password);
 
-            // 教師の所属学校コードをデータベースから取得（BeanもDAOも使わず）
-            String schoolCd = getSchoolCdByTeacherId(id);
-            if (schoolCd != null) {
-                SchoolDao schoolDao = new SchoolDao();
-                School school = schoolDao.get(schoolCd);
-                session.setAttribute("loginSchool", school);
+            if (teacher != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", teacher);
+                request.setAttribute("teachername", teacher.getName());
+
+                // 学校コード取得
+                String schoolCd = getSchoolCdByTeacherId(id);
+                if (schoolCd != null) {
+                    SchoolDao schoolDao = new SchoolDao();
+                    School school = schoolDao.get(schoolCd);
+                    session.setAttribute("loginSchool", school);
+                }
+
+                request.getRequestDispatcher("/menu.jsp").forward(request, response);
+            } else {
+            	 request.getRequestDispatcher("/error.jsp").forward(request, response);
             }
-
-            return "/menu.jsp";
-        } else {
-            request.setAttribute("error", "IDまたはパスワードが正しくありません");
-            return "/login.jsp";
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }
 
-    // 学校コードを teacher.id から直接取得
     private String getSchoolCdByTeacherId(String teacherId) throws Exception {
         String schoolCd = null;
 

@@ -8,13 +8,12 @@ import tool.Action;
 
 public class LogoutAction extends Action {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
-        // ログアウト完了後に表示するページ
-        return "/logout.jsp";
+        request.getRequestDispatcher("/logout.jsp").forward(request, response);
     }
 }
