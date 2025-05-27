@@ -51,7 +51,7 @@
 </style>
 
 <div class="main-content-area">
-    <h1 class="page-title">エラー</h1>
+    <h1 class="page-title">エラーページ</h1>
 
     <div class="error-message-container">
         <p>エラーが発生しました</p>
