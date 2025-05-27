@@ -175,7 +175,7 @@
 <div class="content">
     <h1 class="page-title">学生管理</h1>
     <div class="search-form-container">
-        <form method="get" action="studentSearch" class="search-form">
+        <form method="get" action="/scoremanager/main/StudentListAction" class="search-form">
             <div class="form-group">
                 <label for="entYear">入学年度:</label>
                 <select name="entYear" id="entYear" class="form-control">
@@ -220,7 +220,7 @@
 
             <button type="submit" class="search-button">絞り込み</button>
         </form>
-        <a href="studentcreateaction" class="new-registration-button">新規登録</a>
+        <a href="StudentCreate.action" class="new-registration-button">新規登録</a>
     </div>
 
     <div class="result-info">

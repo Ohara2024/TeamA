@@ -99,7 +99,7 @@
     <h1 class="page-title">学生情報登録</h1>
 
     <div class="form-container">
-        <form id="studentForm" action="studentcreateexecute" method="post" onsubmit="return validateForm()">
+        <form id="studentForm" action="StudentCreateExecute.action" method="post" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="entYear">入学年度</label>
                 <select name="entYear" id="entYear" class="form-control select-dropdown" required>

@@ -3,8 +3,6 @@ package scoremanager.main;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,11 +10,12 @@ import javax.servlet.http.HttpSession;
 import bean.School;
 import bean.Student;
 import dao.StudentDao;
+import tool.Action;
 
-@WebServlet("/studentcreateexecute")
-public class StudentCreateExecuteAction extends HttpServlet {
+public class StudentCreateExecuteAction extends Action {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         // セッション取得（セッションがなければログイン画面へリダイレクト）
@@ -63,7 +62,7 @@ public class StudentCreateExecuteAction extends HttpServlet {
         try {
             boolean result = studentDao.save(student);
             if (result) {
-                response.sendRedirect("student_create_done.jsp");
+            	request.getRequestDispatcher("/student_create_done.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", "学生情報の登録に失敗しました。");
                 request.getRequestDispatcher("student_create_error.jsp").forward(request, response);
