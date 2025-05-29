@@ -3,6 +3,8 @@
 <%@page import="bean.Subject"%>
 <%@page import="bean.TestListStudent"%>
 <%@page import="bean.TestListSubject"%>
+<%@ page import="bean.Student" %>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -207,136 +209,157 @@
     </style>
 </head>
 <body>
-    <%@ include file="/tool/header.jsp"%>
+    <%@ include file="/tool/header.jsp" %>
 
-<div class="wrapper">
-    <div class="sidebar">
-        <%@ include file="/tool/sidebar.jsp" %>
-    </div>
-
-    <div class="main">
-        <div class="title-bar">成績一覧（科目）</div>
-
-        <%
-            String lackError = (String)request.getAttribute("lackError");
-            String nothingError = (String)request.getAttribute("nothingError");
-            String errorMessage = (String)request.getAttribute("error_message");
-
-            if (lackError != null) {
-        %>
-            <div class="error-msg"><%= lackError %></div>
-        <%
-            } else if (nothingError != null) {
-        %>
-            <div class="error-msg"><%= nothingError %></div>
-        <%
-            } else if (errorMessage != null) {
-        %>
-            <div class="error-msg"><%= errorMessage %></div>
-        <%
-            }
-        %>
-
-        <div class="combined-form-container">
-            <form action="TestListSubjectExecute.action" method="get" class="form-box">
-                <div class="form-section">
-                    <span class="form-label">科目情報</span>
-                    <div class="subject-form-fields">
-                        <div class="subject-form-field">
-                            <label for="ent_year">入学年度</label>
-                            <select name="ent_year" id="ent_year" class="select">
-                                <option value="">--------</option>
-                                <%
-                                List<Integer> entYearSet = (List<Integer>)request.getAttribute("ent_year_set");
-                                String selectedEntYear = request.getParameter("ent_year");
-                                if (entYearSet != null) {
-                                    for (Integer y : entYearSet) {
-                                        String selected = "";
-                                        if (selectedEntYear != null && String.valueOf(y).equals(selectedEntYear)) {
-                                            selected = "selected";
-                                        }
-                                %>
-                                        <option value="<%= y %>" <%= selected %>><%= y %></option>
-                                <%
-                                    }
-                                }
-                                %>
-                            </select>
-                        </div>
-
-                        <div class="subject-form-field">
-                            <label for="class_num">クラス</label>
-                            <select name="class_num" id="class_num" class="select">
-                                <option value="">--------</option>
-                                <%
-                                List<String> classNumList = (List<String>)request.getAttribute("class_num_set");
-                                String selectedClassNum = request.getParameter("class_num");
-                                if (classNumList != null) {
-                                    for (String c : classNumList) {
-                                        String selected = "";
-                                        if (selectedClassNum != null && c.equals(selectedClassNum)) {
-                                            selected = "selected";
-                                        }
-                                %>
-                                        <option value="<%= c %>" <%= selected %>><%= c %></option>
-                                <%
-                                    }
-                                }
-                                %>
-                            </select>
-                        </div>
-
-                        <div class="subject-form-field">
-                            <label for="subject_cd">科目</label>
-                            <select name="subject_cd" id="subject_cd" class="select">
-                                <option value="">--------</option>
-                                <%
-                                List<bean.Subject> subjectList = (List<bean.Subject>)request.getAttribute("subjects");
-                                String selectedSubjectCd = request.getParameter("subject_cd");
-                                if (subjectList != null) {
-                                    for (bean.Subject sbj : subjectList) {
-                                        String selected = "";
-                                        if (selectedSubjectCd != null && sbj.getCd().equals(selectedSubjectCd)) {
-                                            selected = "selected";
-                                        }
-                                %>
-                                        <option value="<%= sbj.getCd() %>" <%= selected %>><%= sbj.getName() %></option>
-                                <%
-                                    }
-                                }
-                                %>
-                            </select>
-                        </div>
-                        <input type="hidden" name="action" value="subjectSearch">
-                        <input type="submit" value="検索" class="submit-btn">
-                    </div>
-                </div>
-            </form>
-
-            <form action="TestListStudentExecute.action" method="get" class="form-box">
-                <div class="form-section">
-                    <span class="form-label">学生情報</span>
-                    <div class="student-form-row">
-                        <div class="student-input-group">
-                            <label for="student_no">学生番号</label>
-                            <%
-                                String selectedStudentNo = (String)request.getAttribute("selected_student_no");
-                                if (selectedStudentNo == null) {
-                                    selectedStudentNo = request.getParameter("student_no");
-                                }
-                            %>
-                            <input type="text" name="student_no" id="student_no" maxlength="10"
-                                   placeholder="学生番号を入力してください"
-                                   value="<%= (selectedStudentNo != null ? selectedStudentNo : "") %>">
-                        </div>
-                        <input type="hidden" name="action" value="studentSearch">
-                        <input type="submit" value="検索" class="submit-btn">
-                    </div>
-                </div>
-            </form>
+    <div class="wrapper">
+        <div class="sidebar">
+            <%@ include file="/tool/sidebar.jsp" %>
         </div>
 
-            <%-- 成績テーブル表示 --%>
+        <div class="main">
+            <div class="title-bar">成績一覧（科目）</div>
+
+            <%
+                String lackError = (String) request.getAttribute("lackError");
+                String nothingError = (String) request.getAttribute("nothingError");
+                String errorMessage = (String) request.getAttribute("error_message");
+
+                if (lackError != null) {
+            %>
+                <div class="error-msg"><%= lackError %></div>
+            <%
+                } else if (nothingError != null) {
+            %>
+                <div class="error-msg"><%= nothingError %></div>
+            <%
+                } else if (errorMessage != null) {
+            %>
+                <div class="error-msg"><%= errorMessage %></div>
+            <%
+                }
+            %>
+
+            <div class="combined-form-container">
+                <!-- 科目検索フォーム -->
+                <form action="TestListSubjectExecute.action" method="get" class="form-box">
+                    <div class="form-section">
+                        <span class="form-label">科目情報</span>
+                        <div class="subject-form-fields">
+                            <div class="subject-form-field">
+                                <label for="ent_year">入学年度</label>
+                                <select name="ent_year" id="ent_year" class="select">
+                                    <option value="">--------</option>
+                                    <%
+                                        List<Integer> entYearSet = (List<Integer>) request.getAttribute("ent_year_set");
+                                        String selectedEntYear = request.getParameter("ent_year");
+                                        if (entYearSet != null) {
+                                            for (Integer y : entYearSet) {
+                                                String selected = "";
+                                                if (selectedEntYear != null && String.valueOf(y).equals(selectedEntYear)) {
+                                                    selected = "selected";
+                                                }
+                                    %>
+                                                <option value="<%= y %>" <%= selected %>><%= y %></option>
+                                    <%
+                                            }
+                                        }
+                                    %>
+                                </select>
+                            </div>
+
+                            <div class="subject-form-field">
+                                <label for="class_num">クラス</label>
+                                <select name="class_num" id="class_num" class="select">
+                                    <option value="">--------</option>
+                                    <%
+                                        List<String> classNumList = (List<String>) request.getAttribute("class_num_set");
+                                        String selectedClassNum = request.getParameter("class_num");
+                                        if (classNumList != null) {
+                                            for (String c : classNumList) {
+                                                String selected = "";
+                                                if (selectedClassNum != null && c.equals(selectedClassNum)) {
+                                                    selected = "selected";
+                                                }
+                                    %>
+                                                <option value="<%= c %>" <%= selected %>><%= c %></option>
+                                    <%
+                                            }
+                                        }
+                                    %>
+                                </select>
+                            </div>
+
+                            <div class="subject-form-field">
+                                <label for="subject_cd">科目</label>
+                                <select name="subject_cd" id="subject_cd" class="select">
+                                    <option value="">--------</option>
+                                    <%
+                                        List<Subject> subjectList = (List<Subject>) request.getAttribute("subjects");
+                                        String selectedSubjectCd = request.getParameter("subject_cd");
+                                        if (subjectList != null) {
+                                            for (Subject sbj : subjectList) {
+                                                String selected = "";
+                                                if (selectedSubjectCd != null && sbj.getCd().equals(selectedSubjectCd)) {
+                                                    selected = "selected";
+                                                }
+                                    %>
+                                                <option value="<%= sbj.getCd() %>" <%= selected %>><%= sbj.getName() %></option>
+                                    <%
+                                            }
+                                        }
+                                    %>
+                                </select>
+                            </div>
+
+                            <input type="hidden" name="action" value="subjectSearch">
+                            <input type="submit" value="検索" class="submit-btn">
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 学生検索フォーム -->
+                <form action="TestListStudentExecute.action" method="get" class="form-box">
+                    <div class="form-section">
+                        <span class="form-label">学生情報</span>
+                        <div class="student-form-row">
+                            <div class="student-input-group">
+                                <label for="student_no">学生番号</label>
+                                <%
+                                    String selectedStudentNo = (String) request.getAttribute("selected_student_no");
+                                    if (selectedStudentNo == null) {
+                                        selectedStudentNo = request.getParameter("student_no");
+                                    }
+                                %>
+                                <input type="text" name="student_no" id="student_no" maxlength="10"
+                                       placeholder="学生番号を入力してください"
+                                       value="<%= (selectedStudentNo != null ? selectedStudentNo : "") %>">
+                            </div>
+                            <input type="hidden" name="action" value="studentSearch">
+                            <input type="submit" value="検索" class="submit-btn">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+			<%
+    			String studentNo = (String) request.getAttribute("f4");
+
+    			Student targetStudent = (Student) request.getAttribute("target_student");
+    			String studentName = null;
+    			if (targetStudent != null) {
+    	    		studentName = targetStudent.getName(); // getNameKanji() など別のメソッドならそちらに
+    			}
+
+    			if (studentName != null && studentNo != null) {
+			%>
+    			<div class="subject-name-display">
+    			    学生名：<%= studentName %>（<%= studentNo %>）
+    			</div>
+			<%
+    			}
+			%>
+
+
             <%
                 List<TestListStudent> resultList = (List<TestListStudent>) request.getAttribute("resultList");
                 if (resultList != null && !resultList.isEmpty()) {
@@ -377,6 +400,6 @@
         </div>
     </div>
 
-    <%@ include file="/tool/footer.jsp"%>
+    <%@ include file="/tool/footer.jsp" %>
 </body>
 </html>
