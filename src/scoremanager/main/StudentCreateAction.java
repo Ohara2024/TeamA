@@ -13,6 +13,6 @@ public class StudentCreateAction extends Action {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/student_create.jsp").forward(request, response);
+        request.getRequestDispatcher("/scoremanager/main/student_create.jsp").forward(request, response);
     }
 }

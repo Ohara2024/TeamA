@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, bean.Student" %>
-<%@ include file="../tool/header.jsp" %>
-<%@ include file="../tool/sidebar.jsp" %>
+<%@ include file="/tool/header.jsp" %>
+<%@ include file="/tool/sidebar.jsp" %>
 
 <style>
     body {
@@ -102,7 +102,7 @@
         <form id="studentForm" action="StudentCreateExecute.action" method="post" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="entYear">入学年度</label>
-                <select name="entYear" id="entYear" class="form-control select-dropdown" required>
+                <select name="ent_year" id="ent_year" class="form-control select-dropdown" required>
                     <option value="">--------</option>
                     <option value="2021">2021</option>
                     <option value="2022">2022</option>
@@ -126,7 +126,7 @@
 
             <div class="form-group">
                 <label for="classNum">クラス</label>
-                <select name="classNum" id="classNum" class="form-control select-dropdown" required>
+                <select name="class_num" id="class_num" class="form-control select-dropdown" required>
                     <option value="101">101</option>
                     <option value="102">102</option>
                     <option value="201">201</option>
@@ -135,15 +135,15 @@
                 <span class="hint-text"></span>
             </div>
 
-            <button type="submit" class="submit-button">登録して終了</button>
+            <button type="submit"  name="end" class="submit-button">登録して終了</button>
         </form>
-        <a href="/TeamA/studentSearch" class="back-link">戻る</a>
+        <a href="/TeamA/scoremanager/main/StudentList.action" class="back-link">戻る</a>
     </div>
 </div>
 
 <script>
     function validateForm() {
-        const entYear = document.getElementById("entYear").value;
+        const entYear = document.getElementById("ent_year").value;
         const no = document.getElementById("no").value.trim();
         const name = document.getElementById("name").value.trim();
 
@@ -166,4 +166,4 @@
     }
 </script>
 
-<%@ include file="../tool/footer.jsp" %>
+<%@ include file="/tool/footer.jsp" %>

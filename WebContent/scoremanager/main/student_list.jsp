@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, bean.Student" %>
-<%@ include file="../tool/header.jsp" %>
-<%@ include file="../tool/sidebar.jsp" %>
+<%@ include file="/tool/header.jsp" %>
+<%@ include file="/tool/sidebar.jsp" %>
 
 <style>
     /* メインコンテンツのラッパー */
@@ -29,7 +29,6 @@
         margin-bottom: 20px;
         padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         flex-wrap: wrap; /* レスポンシブ対応 */
     }
 
@@ -114,10 +113,6 @@
         margin-left: 20px; /* 他のフォーム要素との間隔 */
     }
 
-    .new-registration-button:hover {
-        background-color: #286090;
-    }
-
     /* 検索結果件数表示 */
     .result-info {
         margin-bottom: 10px;
@@ -128,6 +123,15 @@
         font-size: 14px;
         color: #333;
     }
+
+.new-registration-button {
+    float: right; /* 要素を右に浮かせる */
+    margin-left: 20px; /* 左側にスペースが必要なら */
+    /* 既存のボタンのCSSスタイル */
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+}
 
     /* 学生リストテーブル */
     .student-table {
@@ -148,7 +152,6 @@
     }
 
     .student-table th {
-        background-color: #f5f5f5;
         font-weight: bold;
         color: #555;
     }
@@ -174,11 +177,12 @@
 
 <div class="content">
     <h1 class="page-title">学生管理</h1>
+    <a href="StudentCreate.action" class="new-registration-button">新規登録</a>
     <div class="search-form-container">
-        <form method="get" action="/scoremanager/main/StudentListAction" class="search-form">
+        <form method="get" action="/TeamA/scoremanager/main/StudentList.action" class="search-form">
             <div class="form-group">
-                <label for="entYear">入学年度:</label>
-                <select name="entYear" id="entYear" class="form-control">
+                <label for="f1">入学年度:</label>
+                <select name="f1" id="f1" class="form-control">
                     <option value="">----</option>
                     <%
                         List<Integer> entYears = (List<Integer>) request.getAttribute("entYears");
@@ -195,8 +199,8 @@
             </div>
 
             <div class="form-group">
-                <label for="classNum">クラス:</label>
-                <select name="classNum" id="classNum" class="form-control">
+                <label for="f2">クラス:</label>
+                <select name="f2" id="f2" class="form-control">
                     <option value="">----</option>
                     <%
                         List<String> classNums = (List<String>) request.getAttribute("classNums");
@@ -213,14 +217,13 @@
             </div>
 
             <div class="form-group checkbox-group">
-                <input type="checkbox" name="isAttend" value="true" id="isAttend" class="form-checkbox"
+                <input type="checkbox" name="f3" value="true" id="f3" class="form-checkbox"
                     <%= ("true".equals(request.getParameter("isAttend"))) ? "checked" : "" %>>
-                <label for="isAttend" class="checkbox-label">在学中</label>
+                <label for="f3" class="checkbox-label">在学中</label>
             </div>
 
             <button type="submit" class="search-button">絞り込み</button>
         </form>
-        <a href="StudentCreate.action" class="new-registration-button">新規登録</a>
     </div>
 
     <div class="result-info">
@@ -243,7 +246,6 @@
                 <th>氏名</th>
                 <th>クラス</th>
                 <th>在学中</th>
-                <th></th> <%-- 変更リンク用の列 --%>
             </tr>
         </thead>
         <tbody>
@@ -257,17 +259,17 @@
                 <td><%= s.getName() %></td>
                 <td><%= s.getClassNum() %></td>
                 <td><%= s.isAttend() ? "〇" : "×" %></td>
-                <td><a href="studentupdateaction?no=<%= s.getNo() %>" class="action-link">変更</a></td>
+                <td><a href="StudentUpdate.action?No=<%= s.getNo() %>" class="action-link">変更</a></td>
             </tr>
             <%
                     }
                 } else {
             %>
-            <tr><td colspan="6" style="text-align: center;">該当する生徒が見つかりませんでした</td></tr>
+            <tr><td colspan="6" style="text-align: center;">学生情報が存在しませんでした</td></tr>
             <%
                 }
             %>
         </tbody>
     </table>
 </div>
-<%@ include file="../tool/footer.jsp" %>
+<%@ include file="/tool/footer.jsp" %>

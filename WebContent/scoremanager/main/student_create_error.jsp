@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, bean.Student" %>
-<%@ include file="../tool/header.jsp" %>
+<%@ include file="/tool/header.jsp" %>
 
 <style>
     body {
@@ -61,4 +61,4 @@
     <a href="javascript:history.back()" class="back-link">戻る</a>
 </div>
 
-<%@ include file="../tool/footer.jsp" %>
+<%@ include file="/tool/footer.jsp" %>

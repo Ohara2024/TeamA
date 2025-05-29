@@ -62,15 +62,15 @@ public class StudentCreateExecuteAction extends Action {
         try {
             boolean result = studentDao.save(student);
             if (result) {
-            	request.getRequestDispatcher("/student_create_done.jsp").forward(request, response);
+            	request.getRequestDispatcher("/scoremanager/main/student_create_done.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", "学生情報の登録に失敗しました。");
-                request.getRequestDispatcher("student_create_error.jsp").forward(request, response);
+                request.getRequestDispatcher("/scoremanager/main/student_create_error.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "エラーが発生しました: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher("/scoremanager/main/error.jsp").forward(request, response);
         }
     }
 }

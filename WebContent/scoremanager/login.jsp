@@ -69,7 +69,7 @@
     .checkbox-group {
         margin-top: 15px;
         margin-bottom: 25px; /* ログインボタンとの間隔 */
-        text-align: left; /* チェックボックスを左寄せ */
+        text-align: center; /* チェックボックスを左寄せ */
     }
 
     .checkbox-input {
@@ -105,7 +105,7 @@
 <div class="login-container">
     <div class="login-card">
         <h2 class="login-title">ログイン</h2>
-        <form action="/TeamA/scoremanager/LoginExecute.action" method="POST">
+        <form action="LoginExecute.action" method="POST">
             <div class="form-group">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" id="id" name="id" class="form-input" placeholder="ID" required>
@@ -117,8 +117,8 @@
             </div>
 
             <div class="checkbox-group">
-                <input type="checkbox" id="showPassword" onclick="togglePassword()" class="checkbox-input">
-                <label for="showPassword" class="checkbox-label">パスワードを表示</label>
+                <input type="checkbox" id="chk_d_ps" name="chk_d_ps" onclick="togglePassword()" class="checkbox-input">
+                <label for="chk_d_ps" class="checkbox-label">パスワードを表示</label>
             </div>
 
             <button type="submit" class="login-button">ログイン</button>
@@ -129,7 +129,7 @@
 <script>
 function togglePassword() {
     var pwd = document.getElementById("password");
-    var chk = document.getElementById("showPassword");
+    var chk = document.getElementById("chk_d_ps");
     if (chk.checked) {
         pwd.type = "text";
     } else {

@@ -21,7 +21,7 @@ public class StudentListAction extends Action {
             throws ServletException, IOException {
 
         try {
-            String schoolCd = "oom"; // 仮固定
+        	String schoolCd = (String) request.getSession().getAttribute("schoolCd");
             SchoolDao schoolDao = new SchoolDao();
             School school = schoolDao.get(schoolCd);
             StudentDao studentDao = new StudentDao();
@@ -57,7 +57,7 @@ public class StudentListAction extends Action {
             }
 
             request.setAttribute("students", students);
-            request.getRequestDispatcher("/student_list.jsp").forward(request, response);
+            request.getRequestDispatcher("/scoremanager/main/student_list.jsp").forward(request, response);
 
         } catch (Exception e) {
             throw new ServletException(e);

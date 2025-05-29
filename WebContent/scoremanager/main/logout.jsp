@@ -45,7 +45,7 @@
     <main>
     	<div class="logout"><h1>ログアウト</h1></div>
         <div class="logout-message">ログアウトしました。</div><br><br>
-        <div class="logout-url"><a href="../../login.jsp">ログイン</a></div>
+        <div class="logout-url"><a href="/TeamA/scoremanager/login.jsp">ログイン</a></div>
     </main>
 
-<%@ include file="../tool/footer.jsp" %>
+<%@ include file="/tool/footer.jsp" %>
