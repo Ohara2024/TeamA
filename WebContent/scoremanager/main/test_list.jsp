@@ -1,130 +1,275 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="bean.Subject" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*, bean.Subject" %>
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>成績参照・一覧</title>
+    <meta charset="UTF-8">
+    <title>成績参照</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #ffffff; /* bodyの背景色（ページ全体の背景） */
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 180px;
+            padding: 10px;
+            background-color: #e0e0e0;
+        }
+        .main {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff; /* mainコンテンツの背景色を白にする */
+            margin-bottom: 120px;
+        }
+        /* 新しくフォーム全体を囲むコンテナ */
+        .combined-form-container {
+            border: 1px solid #ddd; /* 外枠のボーダー */
+            border-radius: 6px;
+            background: #ffffff;
+            margin-bottom: 20px;
+            padding: 16px; /* 内部のパディング */
+            width: fit-content; /* コンテンツに合わせて幅を調整 */
+            min-width: 600px; /* ある程度の最小幅を確保 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex; /* 内部のフォームをflexで配置 */
+            flex-direction: column; /* フォームを縦に並べる */
+        }
+        .form-box {
+            border: none; /* 個別のフォームボックスのボーダーを削除 */
+            background: none; /* 個別のフォームボックスの背景を削除 */
+            padding: 0; /* 個別のフォームボックスのパディングを削除 */
+            margin-bottom: 0; /* 個別のフォームボックスのマージンを削除 */
+            width: auto; /* 幅を自動調整 */
+        }
+
+        /* フォーム間の区切り線 */
+        .combined-form-container > form:first-of-type {
+            padding-bottom: 15px; /* 上のフォームの下にスペース */
+            margin-bottom: 15px; /* 上のフォームの下にスペース */
+            border-bottom: 1px solid #eee; /* 区切り線 */
+        }
+        .combined-form-container > form:last-of-type {
+            padding-top: 15px; /* 下のフォームの上にスペース */
+        }
+
+
+        .form-section {
+            display: flex;
+            align-items: baseline;
+            /* margin-bottom: 15px; を削除、親のflexコンテナで制御 */
+        }
+        .form-label {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 20px;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: left; /* ラベルを左揃えにする */
+            /* align-self: flex-start; */ /* 親のflexコンテナで制御 */
+        }
+
+        /* 科目情報フォームのレイアウト */
+        .subject-form-fields {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .subject-form-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .subject-form-field label {
+            margin-bottom: 4px;
+        }
+
+        /* 学生情報フォームのレイアウト */
+        .student-form-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .student-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .select,
+        input[type="text"] {
+            padding: 4px 6px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        input[type="text"] {
+            width: 200px;
+        }
+        .submit-btn {
+            background-color: #4a5568;
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            height: fit-content;
+            align-self: flex-end;
+            margin-left: 20px; /* 検索ボタンの左マージンを調整 */
+        }
+
+        .error-msg {
+            color: #d9534f;
+            margin-top: 12px;
+            font-size: 0.95em;
+            margin-bottom: 20px; /* エラーメッセージの下にもスペース */
+        }
+        .main .title-bar {
+            background: #f0f0f0;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 16px;
+            border-radius: 4px; /* タイトルバーも少し丸める */
+        }
+        .note {
+            color: #00a1e9;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-    <h1>成績参照</h1>
 
-    <%-- 科目情報による検索フォーム --%>
-    <form action="TestListSubjectExecuteAction" method="post">
-        <table>
-            <tr>
-                <th>科目情報</th>
-                <th>入学年度</th>
-                <td>
-                    <select name="ent_year">
-                        <option value="">-- 選択 --</option>
-                        <%
-                            List<Integer> yearList = (List<Integer>) request.getAttribute("yearList");
-                            String selectedYear = (String) request.getAttribute("ent_year_selected");
-                            if (yearList != null) {
-                                for (Integer year : yearList) {
-                        %>
-                                    <option value="<%= year %>" <%= (selectedYear != null && selectedYear.equals(String.valueOf(year))) ? "selected" : "" %>>
-                                        <%= year %>
-                                    </option>
-                        <%
-                                }
-                            }
-                        %>
-                    </select>
-                </td>
-                <th>クラス</th>
-                <td>
-                    <select name="class_num">
-                        <option value="">-- 選択 --</option>
-                        <%
-                            List<String> classNumList = (List<String>) request.getAttribute("classNumList");
-                            String selectedClassNum = (String) request.getAttribute("class_num_selected");
-                            if (classNumList != null) {
-                                for (String classNum : classNumList) {
-                        %>
-                                    <option value="<%= classNum %>" <%= (selectedClassNum != null && selectedClassNum.equals(classNum)) ? "selected" : "" %>>
-                                        <%= classNum %>
-                                    </option>
-                        <%
-                                }
-                            }
-                        %>
-                    </select>
-                </td>
-                <th>科目</th>
-                <td>
-                    <select name="subject_cd">
-                        <option value="">-- 選択 --</option>
-                        <%
-                            List<bean.Subject> subjectList = (List<bean.Subject>) request.getAttribute("subjectList");
-                            String selectedSubjectCd = (String) request.getAttribute("subject_cd_selected");
-                            if (subjectList != null) {
-                                for (bean.Subject subject_option : subjectList) {
-                        %>
-                                    <option value="<%= subject_option.getCd() %>" <%= (selectedSubjectCd != null && selectedSubjectCd.equals(subject_option.getCd())) ? "selected" : "" %>>
-                                        <%= subject_option.getName() %>
-                                    </option>
-                        <%
-                                }
-                            }
-                        %>
-                    </select>
-                </td>
-                <td><input type="submit" value="検索"></td>
-            </tr>
-        </table>
-    </form>
+<%@ include file="/tool/header.jsp" %>
 
-    <%-- 学生情報による検索フォーム --%>
-    <form action="TestListStudentExecuteAction" method="post">
-        <table>
-            <tr>
-                <th>学生情報</th>
-                <th>学籍番号</th>
-                <td colspan="5">
-                    <input type="text" name="student_no" value="<%= request.getAttribute("student_no_selected") != null ? (String) request.getAttribute("student_no_selected") : "" %>" placeholder="学籍番号を入力してください">
-                </td>
-                <td><input type="submit" value="検索"></td>
-            </tr>
-        </table>
-    </form>
+<div class="wrapper">
+    <div class="sidebar">
+        <%@ include file="/tool/sidebar.jsp" %>
+    </div>
 
-    <%-- エラーメッセージ表示エリア --%>
-    <%
-        List<String> errorMsg = (List<String>) request.getAttribute("errorMsg");
-        if (errorMsg != null && !errorMsg.isEmpty()) {
-    %>
-        <div style="color: red;">
-            <ul>
-                <% for (String msg : errorMsg) { %>
-                    <li><%= msg %></li>
-                <% } %>
-            </ul>
+    <div class="main">
+        <div class="title-bar">成績参照</div>
+
+        <%
+            String lackError = (String)request.getAttribute("lackError");
+            String nothingError = (String)request.getAttribute("nothingError");
+            String errorMessage = (String)request.getAttribute("error_message");
+            if (lackError != null) {
+        %>
+            <div class="error-msg"><%= lackError %></div>
+        <% } else if (nothingError != null) { %>
+            <div class="error-msg"><%= nothingError %></div>
+        <% } else if (errorMessage != null) { %>
+            <div class="error-msg"><%= errorMessage %></div>
+        <% } %>
+
+        <div class="combined-form-container">
+            <form action="TestListSubjectExecute.action" method="get" class="form-box">
+                <div class="form-section">
+                    <span class="form-label">科目情報</span>
+                    <div class="subject-form-fields">
+                        <div class="subject-form-field">
+                            <label for="ent_year">入学年度</label>
+                            <select name="ent_year" id="ent_year" class="select">
+                                <option value="">--------</option>
+                                <%
+                                    List<Integer> entYearSet = (List<Integer>)request.getAttribute("ent_year_set");
+                                    String selectedEntYearStr = (String)request.getAttribute("selected_ent_year");
+                                    if (selectedEntYearStr == null) {
+                                        selectedEntYearStr = request.getParameter("ent_year");
+                                    }
+                                    if (entYearSet != null) {
+                                        for (Integer y : entYearSet) {
+                                            String selected = (selectedEntYearStr != null && String.valueOf(y).equals(selectedEntYearStr)) ? "selected" : "";
+                                %>
+                                            <option value="<%= y %>" <%= selected %>><%= y %></option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+
+                        <div class="subject-form-field">
+                            <label for="class_num">クラス</label>
+                            <select name="class_num" id="class_num" class="select">
+                                <option value="">--------</option>
+                                <%
+                                    List<String> classNumSet = (List<String>)request.getAttribute("class_num_set");
+                                    String selectedClassNum = (String)request.getAttribute("selected_class_num");
+                                    if (selectedClassNum == null) {
+                                        selectedClassNum = request.getParameter("class_num");
+                                    }
+                                    if (classNumSet != null) {
+                                        for (String c : classNumSet) {
+                                            String selected = (selectedClassNum != null && c.equals(selectedClassNum)) ? "selected" : "";
+                                %>
+                                            <option value="<%= c %>" <%= selected %>><%= c %></option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+
+                        <div class="subject-form-field">
+                            <label for="subject_cd">科目</label>
+                            <select name="subject_cd" id="subject_cd" class="select">
+                                <option value="">--------</option>
+                                <%
+                                    List<Subject> subjects = (List<Subject>)request.getAttribute("subjects");
+                                    String selectedSubjectCd = (String)request.getAttribute("selected_subject_cd");
+                                    if (selectedSubjectCd == null) {
+                                        selectedSubjectCd = request.getParameter("subject_cd");
+                                    }
+                                    if (subjects != null) {
+                                        for (Subject sbj : subjects) {
+                                            String selected = (selectedSubjectCd != null && sbj.getCd().equals(selectedSubjectCd)) ? "selected" : "";
+                                %>
+                                            <option value="<%= sbj.getCd() %>" <%= selected %>><%= sbj.getName() %></option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+                        <input type="submit" value="検索" class="submit-btn">
+                    </div>
+                </div>
+            </form>
+
+            <form action="TestListStudentExecute.action" method="get" class="form-box">
+                <div class="form-section">
+                    <span class="form-label">学生情報</span>
+                    <div class="student-form-row">
+                        <div class="student-input-group">
+                            <label for="student_no">学生番号</label>
+                            <%
+                                String selectedStudentNo = (String)request.getAttribute("selected_student_no");
+                                if (selectedStudentNo == null) {
+                                    selectedStudentNo = request.getParameter("student_no");
+                                }
+                            %>
+                            <input type="text" name="student_no" id="student_no" maxlength="10"
+                                   placeholder="学生番号を入力してください"
+                                   value="<%= (selectedStudentNo != null ? selectedStudentNo : "") %>">
+                        </div>
+                        <input type="submit" value="検索" class="submit-btn">
+                    </div>
+                </div>
+            </form>
         </div>
-    <%
-        }
-    %>
 
-    <%-- 検索結果の表示を条件分岐でインクルード --%>
-    <%
-        // TestListSubjectExecuteActionがフォワードした場合
-        if (request.getAttribute("testListSubject") != null) {
-            // testListSubjectResult は、TestListSubjectExecuteActionがセットする任意のフラグやオブジェクト
-            // 例: request.setAttribute("testListSubjectResult", true);
-    %>
-        <jsp:include page="test_list_subject.jsp" />
-    <%
-        // TestListStudentExecuteActionがフォワードした場合
-        } else if (request.getAttribute("testListStudent") != null) {
-    %>
-        <jsp:include page="test_list_student.jsp" />
-    <%
-        }
-    %>
+        <p class="note">科目情報を選択または学生情報を入力して検索ボタンをクリックしてください</p>
+    </div>
+</div>
 
-    <br>
-<th>科目情報を選択または学生情報を入力して検索ボタンをクリックしてください</th>
+<%@ include file="/tool/footer.jsp" %>
 </body>
 </html>

@@ -1,12 +1,9 @@
 package scoremanager.main;
 
-import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,101 +12,96 @@ import bean.School;
 import bean.Subject;
 import bean.Teacher;
 import bean.TestListSubject;
+import dao.ClassNumDao;
 import dao.SubjectDao;
 import dao.TestListSubjectDao;
+import tool.Action;
 
-@WebServlet("/scoremanager/main/TestListSubjectExecuteAction")
-public class TestListSubjectExecuteAction extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+public class TestListSubjectExecuteAction extends Action {
 
+    // ドロップダウンデータをセットする共通メソッド
+    private void setDropdownData(HttpServletRequest request, School school) throws Exception {
+        List<Integer> entYearSet = new ArrayList<>();
+        int currentYear = LocalDate.now().getYear();
+        for (int i = currentYear - 10; i <= currentYear; i++) {
+            entYearSet.add(i);
+        }
+        request.setAttribute("ent_year_set", entYearSet);
+
+        ClassNumDao classNumDao = new ClassNumDao();
+        List<String> classNumSet = classNumDao.filter(school);
+        request.setAttribute("class_num_set", classNumSet);
+
+        SubjectDao subjectDao = new SubjectDao();
+        List<Subject> subjects = subjectDao.filter(school);
+        request.setAttribute("subjects", subjects);
+    }
+
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("teacher");
-
-        List<String> errorMsg = new ArrayList<>(); // エラーメッセージ格納用リスト
-
-        // ログイン状態の確認
+        Teacher teacher = (Teacher) session.getAttribute("user");
         if (teacher == null) {
-            errorMsg.add("教員情報が取得できませんでした。ログインしてください。");
-            request.setAttribute("errorMsg", errorMsg);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            response.sendRedirect("../Login.action"); // 相対パスでのリダイレクト
             return;
         }
 
         School school = teacher.getSchool();
-        // 学校情報の確認
-        if (school == null) {
-            errorMsg.add("学校情報が取得できませんでした。");
-            request.setAttribute("errorMsg", errorMsg);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
-            return;
-        }
+        SubjectDao subjectDao = new SubjectDao();
+        TestListSubjectDao testListSubjectDao = new TestListSubjectDao();
 
-        // リクエストパラメータの取得
-        String entYearStr = request.getParameter("ent_year");
-        String classNum = request.getParameter("class_num");
-        String subjectCd = request.getParameter("subject_cd");
+        try {
+            String entYearStr = request.getParameter("ent_year"); // パラメータ名を ent_year に統一
+            String classNum = request.getParameter("class_num"); // パラメータ名を class_num に統一
+            String subjectCd = request.getParameter("subject_cd"); // パラメータ名を subject_cd に統一
 
-        int entYear = 0;
-        // 入学年度の文字列を数値に変換（変換できない場合は0のまま）
-        if (entYearStr != null && !entYearStr.isEmpty()) {
+            boolean hasCondition = entYearStr != null && !entYearStr.trim().isEmpty() &&
+                                   classNum != null && !classNum.trim().isEmpty() &&
+                                   subjectCd != null && !subjectCd.trim().isEmpty();
+
+            if (!hasCondition) {
+                request.setAttribute("lackError", "入学年度とクラスと科目を選択してください");
+                setDropdownData(request, school);
+                request.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(request, response);
+                return;
+            }
+
+            int entYear;
             try {
                 entYear = Integer.parseInt(entYearStr);
             } catch (NumberFormatException e) {
-                // 数値変換失敗時のエラー処理
-                errorMsg.add("入学年度の形式が不正です。");
+                request.setAttribute("lackError", "入学年度が不正です");
+                setDropdownData(request, school);
+                request.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(request, response);
+                return;
             }
-        }
 
-        // 検索条件のバリデーション
-        if (entYear == 0 || classNum == null || classNum.isEmpty() || subjectCd == null || subjectCd.isEmpty()) {
-            // エラーメッセージを追加
-            errorMsg.add("入学年度、クラス、科目をすべて選択してください。");
-        }
+            Subject subject = subjectDao.get(subjectCd, school);
 
-        List<TestListSubject> testList = null;
-        Subject subject = null;
+            if (subject == null) {
+                request.setAttribute("lackError", "科目が選択されていません");
+                setDropdownData(request, school);
+                request.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(request, response);
+                return;
+            } else {
+                List<TestListSubject> list = testListSubjectDao.filter(entYear, classNum, subject, school);
 
-        // エラーがない場合のみDBアクセス
-        if (errorMsg.isEmpty()) {
-            try {
-                SubjectDao subjectDao = new SubjectDao();
-                subject = subjectDao.get(subjectCd, school); // 選択された科目情報を取得
+                request.setAttribute("resultList", list);
+                request.setAttribute("subjectName", subject.getName());
 
-                // 科目が見つからない場合
-                if (subject == null) {
-                    errorMsg.add("指定された科目が見つかりませんでした。");
-                } else {
-                    TestListSubjectDao testListSubjectDao = new TestListSubjectDao();
-                    testList = testListSubjectDao.filter(entYear, classNum, subject, school);
-                }
+                // 検索後にフォームに値を保持するためのsetAttribute（JSPのf1,f2,f3に対応させる）
+                request.setAttribute("f1", entYearStr);
+                request.setAttribute("f2", classNum);
+                request.setAttribute("f3", subjectCd);
 
-            } catch (Exception e) {
-                e.printStackTrace(); // 開発中はログ出力。本番では適切なロギングフレームワークを使用。
-                errorMsg.add("成績データの取得に失敗しました。");
+                setDropdownData(request, school);
+                request.getRequestDispatcher("/scoremanager/main/test_list_subject.jsp").forward(request, response);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error_message", "処理中にエラーが発生しました。");
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
-
-        // 検索条件をJSPに送り返してフォームの値を保持させる
-        // 入学年度は文字列として保持
-        request.setAttribute("ent_year_selected", entYearStr);
-        request.setAttribute("class_num_selected", classNum);
-        request.setAttribute("subject_cd_selected", subjectCd);
-
-        // 検索結果をJSPに送る
-        request.setAttribute("subject", subject); // 取得した科目情報をJSPに渡す
-        request.setAttribute("testList", testList); // 成績リストをJSPに渡す
-
-        // 科目検索の結果であることを示すフラグをセット
-        // test_list.jsp でこのフラグを見て、test_list_subject_result.jsp をインクルードするか判断する
-        request.setAttribute("testListSubjectResult", true);
-
-        // エラーメッセージがあればセット
-        if (!errorMsg.isEmpty()) {
-            request.setAttribute("errorMsg", errorMsg);
-        }
-
-        // 初期表示画面（test_list.jsp）にフォワード
-        request.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(request, response);
     }
 }

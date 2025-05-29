@@ -1,94 +1,51 @@
 package scoremanager.main;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.time.LocalDate; // LocalDateのインポートを追加
+import java.util.ArrayList; // ArrayListのインポートを追加
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import bean.Subject;
+import bean.School;
+import bean.Teacher;
 import dao.ClassNumDao;
 import dao.SubjectDao;
+import tool.Action;
 
-/**
- * 成績照会画面の初期表示を行うサーブレット
- */
-@WebServlet("/scoremanager/main/TestList.action")
-public class TestListAction extends HttpServlet {
-    public TestListAction() {
-        super();
+public class TestListAction extends Action {
+    private void setDropdownData(HttpServletRequest request, School school) throws Exception {
+        List<Integer> entYearSet = new ArrayList<>();
+        int currentYear = LocalDate.now().getYear();
+        for (int i = currentYear - 10; i <= currentYear; i++) { // 現在の年から過去10年、未来10年など、範囲を適切に設定
+            entYearSet.add(i);
+        }
+        request.setAttribute("ent_year_set", entYearSet);
+
+        ClassNumDao classNumDao = new ClassNumDao();
+        List<String> classNumSet = classNumDao.filter(school);
+        request.setAttribute("class_num_set", classNumSet); // 属性名を class_num_set に統一
+
+        SubjectDao subjectDao = new SubjectDao();
+        List<bean.Subject> subjects = subjectDao.filter(school); // bean.Subjectを明示
+        request.setAttribute("subjects", subjects); // 属性名を subjects に統一
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		HttpSession session = req.getSession();
+		Teacher teacher = (Teacher) session.getAttribute("user");
 
-        //   セッションからTeacherインスタンスを取得
-        HttpSession session = request.getSession();
-        bean.Teacher teacher = (bean.Teacher) session.getAttribute("teacher");
+		if (teacher == null) {
+			res.sendRedirect("../Login.action");
+			return;
+		}
 
-        //   エラーメッセージ格納用リスト
-        List<String> errorMsg = new ArrayList<>();
+		School school = teacher.getSchool();
 
-        // ★★★ teacher オブジェクトの null チェック ★★★
-        if (teacher == null) {
-            errorMsg.add("教員情報が取得できませんでした。ログインしてください。");
-            request.setAttribute("errorMsg", errorMsg);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
-            return; // 処理を中断
-        }
-
-        // ★★★ teacher.getSchool() の null チェック ★★★
-        if (teacher.getSchool() == null) {
-            errorMsg.add("学校情報が取得できませんでした。");
-            request.setAttribute("errorMsg", errorMsg);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
-            return; // 処理を中断
-        }
-
-        //   年リストを作成
-        List<Integer> yearList = new ArrayList<>();
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = currentYear; i >= 2000; i--) {
-            yearList.add(i);
-        }
-        request.setAttribute("yearList", yearList);
-
-        try {
-            //   クラス一覧を取得
-            ClassNumDao classNumDao = new ClassNumDao();
-            List<String> classNumList = classNumDao.filter(teacher.getSchool());
-            request.setAttribute("classNumList", classNumList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            errorMsg.add("クラス一覧の取得に失敗しました。");
-        }
-
-        try {
-            //   科目一覧を取得
-            SubjectDao subjectDao = new SubjectDao();
-            List<Subject> subjectList = subjectDao.filter(teacher.getSchool());
-            request.setAttribute("subjectList", subjectList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            errorMsg.add("科目一覧の取得に失敗しました。");
-        }
-
-        if (!errorMsg.isEmpty()) {
-            request.setAttribute("errorMsg", errorMsg);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
-        } else {
-            request.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(request, response);
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
-    }
+		// ドロップダウンデータをセットする共通メソッドを呼び出す
+		setDropdownData(req, school);
+		req.getRequestDispatcher("/scoremanager/main/test_list.jsp").forward(req, res);
+	}
 }
