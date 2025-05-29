@@ -11,7 +11,7 @@ public class LoginAction extends Action {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // login.jsp へフォワード
+        // login.jsp へフォワードする
 
         request.getRequestDispatcher("/scoremanager/main/login.jsp").forward(request, response);
 
