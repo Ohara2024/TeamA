@@ -15,7 +15,9 @@
 <input type="text" name="name" required><br>
 <label for="class_num">クラス</label>
 <select class="class"id="class" name="class_num">
-<option value="">
+  <option value="" selected>---</option>
+  <option value="131">131</option>
+  <option value="201">201</option>
 </select>
 <label for="attend">在学中</label>
 <input type="checkbox" name="is_attend">

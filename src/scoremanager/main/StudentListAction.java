@@ -33,9 +33,9 @@ public class StudentListAction extends Action {
             request.setAttribute("classNums", classNums);
 
             // --- 検索条件の取得 ---
-            String entYearStr = request.getParameter("entYear");
-            String classNum = request.getParameter("classNum");
-            String isAttendStr = request.getParameter("isAttend");
+            String entYearStr = request.getParameter("f1");
+            String classNum = request.getParameter("f2");
+            String isAttendStr = request.getParameter("f3");
 
             List<Student> students;
 

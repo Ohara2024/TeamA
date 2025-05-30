@@ -16,16 +16,6 @@
             margin: 0;
             background-color: #ffffff; /* bodyの背景色（ページ全体の背景） */
         }
-
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 180px;
-            padding: 10px;
-            background-color: #e0e0e0;
-        }
         .main {
             flex: 1;
             padding: 20px;
@@ -211,10 +201,7 @@
 <body>
     <%@ include file="/tool/header.jsp" %>
 
-    <div class="wrapper">
-        <div class="sidebar">
             <%@ include file="/tool/sidebar.jsp" %>
-        </div>
 
         <div class="main">
             <div class="title-bar">成績一覧（科目）</div>
@@ -353,7 +340,7 @@
     			if (studentName != null && studentNo != null) {
 			%>
     			<div class="subject-name-display">
-    			    学生名：<%= studentName %>（<%= studentNo %>）
+    			    氏名：<%= studentName %>（<%= studentNo %>）
     			</div>
 			<%
     			}
@@ -398,7 +385,6 @@
                 }
             %>
         </div>
-    </div>
 
     <%@ include file="/tool/footer.jsp" %>
 </body>
