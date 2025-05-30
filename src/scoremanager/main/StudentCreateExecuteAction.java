@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import bean.School;
 import bean.Student;
+import bean.Teacher;
 import dao.StudentDao;
 import tool.Action;
 
@@ -21,23 +22,30 @@ public class StudentCreateExecuteAction extends Action {
         // セッション取得（セッションがなければログイン画面へリダイレクト）
         HttpSession session = request.getSession(false);
         if (session == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login.action");
             return;
         }
 
-        // セッションから学校情報を取得
-        School school = (School) session.getAttribute("loginSchool");
+        // セッションから教員情報を取得（userにはTeacherが入っている）
+        Teacher teacher = (Teacher) session.getAttribute("user");
+        if (teacher == null) {
+            response.sendRedirect("login.action");
+            return;
+        }
+
+        // 教員から学校情報を取得
+        School school = teacher.getSchool();
         if (school == null) {
             request.setAttribute("error", "学校情報が取得できませんでした。再度ログインしてください。");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("../login.jsp").forward(request, response);
             return;
         }
 
         // フォームからのパラメータを取得
         String no = request.getParameter("no");
         String name = request.getParameter("name");
-        String entYearStr = request.getParameter("entYear");
-        String classNum = request.getParameter("classNum");
+        String entYearStr = request.getParameter("ent_year");
+        String classNum = request.getParameter("class_num");
 
         int entYear = 0;
         try {
@@ -55,14 +63,14 @@ public class StudentCreateExecuteAction extends Action {
         student.setEntYear(entYear);
         student.setClassNum(classNum);
         student.setAttend(true); // デフォルト在籍状態
-        student.setSchool(school); // セッションから取得した学校情報をセット
+        student.setSchool(school); // 教員から取得した学校情報をセット
 
         StudentDao studentDao = new StudentDao();
 
         try {
             boolean result = studentDao.save(student);
             if (result) {
-            	request.getRequestDispatcher("/scoremanager/main/student_create_done.jsp").forward(request, response);
+                request.getRequestDispatcher("/scoremanager/main/student_create_done.jsp").forward(request, response);
             } else {
                 request.setAttribute("error", "学生情報の登録に失敗しました。");
                 request.getRequestDispatcher("/scoremanager/main/student_create_error.jsp").forward(request, response);

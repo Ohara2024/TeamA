@@ -41,7 +41,7 @@ public class FrontController extends HttpServlet {
 
 			// エラーページへリダイレクト
 
-			req.getRequestDispatcher("/error.jsp").forward(req, res);
+			req.getRequestDispatcher("../error.jsp").forward(req, res);
 
 		}
 
