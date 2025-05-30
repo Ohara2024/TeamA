@@ -21,7 +21,6 @@ import tool.Action;
 
 public class TestListStudentExecuteAction extends Action {
 
-    // ドロップダウンデータをセットする共通メソッド
     private void setDropdownData(HttpServletRequest request, School school) throws Exception {
         List<Integer> entYearSet = new ArrayList<>();
         int currentYear = LocalDate.now().getYear();
