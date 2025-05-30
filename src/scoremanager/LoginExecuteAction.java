@@ -27,12 +27,15 @@ public class LoginExecuteAction extends Action {
                 HttpSession session = request.getSession();
 
                 session.setAttribute("user", teacher);
+                if (teacher.getSchool() != null) {
+                	session.setAttribute("schoolCd", teacher.getSchool().getCd());
+                }
 
                 request.getRequestDispatcher("main/menu.jsp").forward(request, response);
 
             } else {
 
-            	 request.getRequestDispatcher("/error.jsp").forward(request, response);
+            	 request.getRequestDispatcher("main/error.jsp").forward(request, response);
 
             }
 
@@ -40,7 +43,7 @@ public class LoginExecuteAction extends Action {
 
             e.printStackTrace();
 
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("main/error.jsp").forward(request, response);
 
         }
 

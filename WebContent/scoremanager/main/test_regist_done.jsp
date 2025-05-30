@@ -55,7 +55,6 @@
 <!-- 共通ヘッダー -->
 <%@ include file="/tool/header.jsp" %>
 
-<div class="wrapper">
   <!-- 共通サイドバー -->
   <div class="sidebar">
     <%@ include file="/tool/sidebar.jsp" %>
@@ -77,7 +76,6 @@
     </div>
 
   </div><!-- /.main -->
-</div><!-- /.wrapper -->
 
 <!-- 共通フッター -->
 <%@ include file="/tool/footer.jsp" %>

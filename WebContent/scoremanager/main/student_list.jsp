@@ -5,11 +5,6 @@
 <%@ include file="/tool/sidebar.jsp" %>
 
 <style>
-    /* メインコンテンツのラッパー */
-    .content { /* 既存の.contentクラスを修正 */
-        flex-grow: 1; /* 親要素でflexboxが使われている場合、残りのスペースを埋める */
-        padding: 20px;
-    }
 
     /* ページタイトル */
     .page-title {

@@ -13,7 +13,7 @@ public class LoginAction extends Action {
 
         // login.jsp へフォワードする
 
-        request.getRequestDispatcher("/scoremanager/main/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/scoremanager/login.jsp").forward(request, response);
 
     }
 
