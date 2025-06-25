@@ -4,7 +4,7 @@
 
 <Context reloadable="true">
 	<Resource
-		name="jdbc/yajima"
+		name="jdbc/exam"
 		auth="Container"
 		type="javax.sql.DataSource"
 		driverClassName="org.h2.Driver"
