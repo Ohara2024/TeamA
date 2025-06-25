@@ -4,7 +4,7 @@
 
 <Context reloadable="true">
 	<Resource
-		name="jdbc/exam"
+		name="jdbc/examtest"
 		auth="Container"
 		type="javax.sql.DataSource"
 		driverClassName="org.h2.Driver"
